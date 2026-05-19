@@ -1,0 +1,26 @@
+.grid-container {
+  border: 24px, solid;
+  border-color: black;
+  width: fit-content;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-gap: 5px;
+  padding: 25px;
+  background-color: darkolivegreen;
+}
+
+.grid-item {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f0f0f0;
+  padding: 20px;
+  border: 1px solid #ccc;
+  height: 100px;
+  width: 100px;
+  font-family:'Microsoft Sans Serif';
+  font-weight: bold;
+}
+.grid-item:hover{
+    cursor: pointer;
+}
