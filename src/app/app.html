@@ -1,5 +1,7 @@
 
-<h3 style="color: white;">Score: {{ score }} </h3>
+<div class="confetti-wrapper"></div>
+
+<h3 style="color: white;">Score: {{ score }} | Moves: {{ moveCount }} </h3>
 <div class="grid-container">
   @for (card of cards; track $index) {
     <!-- EMPTY BOX -->
@@ -9,19 +11,19 @@
     <!-- LOCKED -->
     @else if(card.isLocked){
     <div class="grid-item" style="background-color: green; cursor: default;">
-      <p>{{ card.word }}</p>
+      <img [src]="card.url" style="filter: sepia(100%) hue-rotate(90deg) saturate(400%); "/>
     </div>
     }
     <!-- ACTIVE -->
     @else{
     <div class="grid-item" style="cursor: default;">
-      <p>{{ card.word }}</p>
+      <img [src]="card.url"/>
     </div>
     }
   }
 </div>
 
-@if(score == possibleWords.length){
+@if(score == pictureCount){
   <div class="restart-container">
     <button (click)="restartGame()"> Restart </button>
   </div>

@@ -3,7 +3,7 @@ import { Component, ChangeDetectorRef } from '@angular/core';
 interface Card {
   isHidden: boolean;
   isLocked: boolean;
-  word: string;
+  url: string;
 }
 
 @Component({
@@ -13,11 +13,13 @@ interface Card {
   styleUrl: './app.css'
 })
 export class App {
-  possibleWords: string[] = ["Zombie", "Chloe", "Reid", "Rubert", "Coffee", "Job", "Frank", "Enterprise"];
+  pictureCount: number = 8;
   cards: Card[] = [];
   activeSelection: boolean = false;
   activeCardIndex!: number;
+
   score: number = 0;
+  moveCount: number = 0;
   isLoading: boolean = false;
   constructor(private cdr: ChangeDetectorRef) {
     this.createCards();
@@ -25,17 +27,17 @@ export class App {
   }
 
   createCards() {
-    for (let word of this.possibleWords) {
+    for (let i: number = 1; i <= this.pictureCount; i++) {
       this.cards.push({
         isHidden: true,
         isLocked: false,
-        word: word
+        url: "kittypics/zombie" + i + ".png"
       });
 
       this.cards.push({
         isHidden: true,
         isLocked: false,
-        word: word
+        url: "kittypics/zombie" + i + ".png"
       });
     }
   }
@@ -58,15 +60,31 @@ export class App {
     if (this.isLoading) {
       return;
     }
+    let audio = new Audio();
+    audio.src = "sfx/click.mp3";
+    //audio.load();
+    audio.play();
 
     c.isHidden = false;
     // first card is already flipped
     if (this.activeSelection) {
+      this.moveCount++;
       // correct guess
-      if (this.cards[this.activeCardIndex].word == c.word) {
+      if (this.cards[this.activeCardIndex].url == c.url) {
+        // Play meow sound effect
+        const meowNum = Math.floor(Math.random() * 4) + 1;
+        audio.src = "sfx/meow" + meowNum + ".mp3";
+        //audio.load();
+        audio.volume = 0.1;
+        audio.play();
         this.score++;
         this.cards[this.activeCardIndex].isLocked = true;
         this.cards[i].isLocked = true;
+        if (this.score == this.pictureCount) {
+          audio.src = "sfx/win.mp3";
+          audio.play();
+          this.confettiFall();
+        }
       }
       // incorrect guess
       else {
@@ -89,6 +107,30 @@ export class App {
       this.activeSelection = true;
       this.activeCardIndex = i;
     }
+  }
+
+  confettiFall() {
+    const confettiWrapper = document.querySelector('.confetti-wrapper');
+
+    if (!confettiWrapper) {
+      return;
+    }
+
+    for (let i = 0; i < 60; i++) {
+      const confetti = document.createElement('div');
+
+      confetti.classList.add('confetti-piece');
+      confetti.style.left = `${Math.random() * 100}%`;
+      confetti.style.setProperty('--fall-duration', `${Math.random() * 3 + 3}s`);
+      confetti.style.setProperty('--confetti-color', this.getRandomColor());
+
+      confettiWrapper.appendChild(confetti);
+    }
+  }
+
+  getRandomColor() {
+    const colors = ['#ff6347', '#ffa500', '#32cd32', '#1e90ff', '#ff69b4'];
+    return colors[Math.floor(Math.random() * colors.length)];
   }
 
   restartGame() {
