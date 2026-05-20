@@ -15,6 +15,7 @@ interface Card {
 export class App {
   pictureCount: number = 8;
   cards: Card[] = [];
+  preloadedImages: HTMLImageElement[] = [];
   activeSelection: boolean = false;
   activeCardIndex!: number;
 
@@ -22,8 +23,18 @@ export class App {
   moveCount: number = 0;
   isLoading: boolean = false;
   constructor(private cdr: ChangeDetectorRef) {
+    this.preloadPictures();
     this.createCards();
     this.shuffleCards();
+  }
+
+  preloadPictures() {
+    for (let i = 1; i <= this.pictureCount; i++) {
+      const img = new Image();
+      img.src = "kittypics/zombie" + i + ".png";
+
+      this.preloadedImages.push(img);
+    }
   }
 
   createCards() {
