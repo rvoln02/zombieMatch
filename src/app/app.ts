@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ChangeDetectorRef } from '@angular/core';
 
 interface Card {
   isHidden: boolean;
@@ -13,14 +13,13 @@ interface Card {
   styleUrl: './app.css'
 })
 export class App {
-  possibleWords: string[] = ["Zombie", "Chloe", "Reid", "Rubert", "Coffee", "Job"];
+  possibleWords: string[] = ["Zombie", "Chloe", "Reid", "Rubert", "Coffee", "Job", "Frank", "Enterprise"];
   cards: Card[] = [];
   activeSelection: boolean = false;
   activeCardIndex!: number;
   score: number = 0;
   isLoading: boolean = false;
-
-  constructor() {
+  constructor(private cdr: ChangeDetectorRef) {
     this.createCards();
     this.shuffleCards();
   }
@@ -65,19 +64,23 @@ export class App {
     if (this.activeSelection) {
       // correct guess
       if (this.cards[this.activeCardIndex].word == c.word) {
+        this.score++;
         this.cards[this.activeCardIndex].isLocked = true;
         this.cards[i].isLocked = true;
       }
       // incorrect guess
       else {
-        
         this.isLoading = true;
+
         await this.delay(1000);
-        this.isLoading = false;
+        
         //reset cards
         c.isHidden = true;
         this.cards[this.activeCardIndex].isHidden = true;
-        // TODO need to fix the page not refreshing after reset
+        
+        this.isLoading = false;
+        // update the page
+        this.cdr.detectChanges();
       }
       this.activeSelection = false;
     }
@@ -88,4 +91,7 @@ export class App {
     }
   }
 
+  restartGame() {
+    window.location.reload();
+  }
 }

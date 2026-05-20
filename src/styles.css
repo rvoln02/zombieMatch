@@ -2,9 +2,10 @@ body{
     background-color: darkslategrey;
 }
 
-html{
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+html {
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Microsoft Sans Serif';
 }
